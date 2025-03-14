@@ -1,39 +1,42 @@
 import pygame
 from settings import *
+from player import Player
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self, groups):
-        super().__init__(groups)
-        self.image = pygame.image.load(join('images', 'player', 'down', '0.png'))
-        self.rect = self.image.get_frect(center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
-        self.direction = pygame.Vector2()
-        self.speed = 500
+class Game:
+    def __init__(self):
+        # set up
+        pygame.init
+        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+        pygame.display.set_caption('Vampire Survivor')        
+        self.clock = pygame.time.Clock()
+        self.running = True
 
-    def update (self, dt):
-        keys = pygame.key.get_pressed()
-        self.direction.x = keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]
-        self.direction.y = keys[pygame.K_DOWN] - keys[pygame.K_UP]
-        self.direction = self.direction.normalize() if self.direction else self.direction
-        self.rect.center += self.direction * self.speed * dt
+        # groups
+        self.all_sprites = pygame.sprite.Group()
 
-running = True
-all_sprites = pygame.sprite.Group()
-
-player = Player(all_sprites)
-clock = pygame.time.Clock()
-
-pygame.init()
-while running:
-    dt = clock.tick() / 1000
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        # sprites
+        self.player = Player((400, 300), self.all_sprites)
     
-    all_sprites.update(dt)
+    def run(self):
+        while self.running:
+            # dt
+            dt = self.clock.tick() / 1000
 
-    screen.fill('black')
-    all_sprites.draw(screen)
+            # event loop
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
 
-    pygame.display.update()
+            # update
+            self.all_sprites.update(dt)
 
-pygame.quit()
+            #draw
+            self.screen.fill('#000000')
+            self.all_sprites.draw(self.screen)
+            pygame.display.update()
+
+        pygame.quit()
+        
+if __name__ == '__main__':
+    game = Game()
+    game.run()
