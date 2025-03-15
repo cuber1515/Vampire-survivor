@@ -50,8 +50,7 @@ class Game:
             self.all_sprites.update(dt)
 
             #draw
-            self.screen.fill('#000000')
-            self.all_sprites.draw(self.screen)
+            self.all_sprites.draw()
             pygame.display.update()
 
         pygame.quit()
