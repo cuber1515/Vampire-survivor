@@ -50,7 +50,7 @@ class Game:
             self.all_sprites.update(dt)
 
             #draw
-            self.all_sprites.draw()
+            self.all_sprites.draw(self.player.rect.center)
             pygame.display.update()
 
         pygame.quit()
