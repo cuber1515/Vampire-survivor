@@ -16,8 +16,6 @@ class Player(pygame.sprite.Sprite):
 
     def load_images(self):
         self.frames = {'left': [], 'right': [], 'up': [], 'down': []}
-
-
         for state in self.frames.keys():
             for folder_path, sub_folders, file_names in walk(join('images', 'player', state)):
                 if file_names:
@@ -58,7 +56,7 @@ class Player(pygame.sprite.Sprite):
             self.state = 'down' if self.direction.y > 0 else 'up'
 
         # animate
-        self.frame_index += 5 * dt
+        self.frame_index = self.frame_index + 20 * dt if self.direction else 0
         self.image = self.frames[self.state][int(self.frame_index) % len(self.frames[self.state])]
 
     def update (self, dt):
