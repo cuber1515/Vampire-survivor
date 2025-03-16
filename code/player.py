@@ -18,7 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.direction = pygame.Vector2()
         self.speed = 500
         self.collision_sprites = collision_sprites
-        self.animate_speed = 500
+        self.animate_speed = 201
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -47,16 +47,16 @@ class Player(pygame.sprite.Sprite):
     def animate(self, dt):
         if self.direction.x > 0: 
             self.right_index += int(self.animate_speed * dt)
-            self.image = self.right_frames[self.right_index % 3]
+            self.image = self.right_frames[self.right_index % 4]
         elif self.direction.x < 0:
             self.left_index += int(self.animate_speed * dt)
-            self.image = self.left_frames[self.left_index % 3]
+            self.image = self.left_frames[self.left_index % 4]
         elif self.direction.y > 0:
             self.down_index += int(self.animate_speed * dt)
-            self.image = self.down_frames[self.down_index % 3]
+            self.image = self.down_frames[self.down_index % 4]
         elif self.direction.y < 0:
             self.up_index += int(self.animate_speed * dt)
-            self.image = self.up_frames[self.up_index % 3]
+            self.image = self.up_frames[self.up_index % 4]
 
                 
     def update (self, dt):
