@@ -3,7 +3,14 @@ from settings import *
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups, collision_sprites):
         super().__init__(groups)
-        self.image = pygame.image.load(join('images', 'player', 'down', '0.png')).convert_alpha()
+        self.down_frames = [pygame.image.load(join('images', 'player', 'down', f'{i}.png')).convert_alpha() for i in range(4)]
+        self.left_frames = [pygame.image.load(join('images', 'player', 'left', f'{i}.png')).convert_alpha() for i in range(4)]
+        self.right_frames = [pygame.image.load(join('images', 'player', 'right', f'{i}.png')).convert_alpha() for i in range(4)]
+        self.up_frames = [pygame.image.load(join('images', 'player', 'up', f'{i}.png')).convert_alpha() for i in range(4)]
+
+        self.left_index, self.right_index, self.down_index, self.up_index = 0, 0, 0, 0
+
+        self.image = self.down_frames[self.down_index]
         self.rect = self.image.get_frect(center = pos)
         self.hitbox_rect = self.rect.inflate(-60, -90)
 
@@ -11,6 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.direction = pygame.Vector2()
         self.speed = 500
         self.collision_sprites = collision_sprites
+        self.animate_speed = 500
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -35,7 +43,23 @@ class Player(pygame.sprite.Sprite):
                 else:
                     if self.direction.y > 0: self.hitbox_rect.bottom = sprite.rect.top
                     if self.direction.y < 0: self.hitbox_rect.top = sprite.rect.bottom
+
+    def animate(self, dt):
+        if self.direction.x > 0: 
+            self.right_index += int(self.animate_speed * dt)
+            self.image = self.right_frames[self.right_index % 3]
+        elif self.direction.x < 0:
+            self.left_index += int(self.animate_speed * dt)
+            self.image = self.left_frames[self.left_index % 3]
+        elif self.direction.y > 0:
+            self.down_index += int(self.animate_speed * dt)
+            self.image = self.down_frames[self.down_index % 3]
+        elif self.direction.y < 0:
+            self.up_index += int(self.animate_speed * dt)
+            self.image = self.up_frames[self.up_index % 3]
+
                 
     def update (self, dt):
         self.input()
         self.move(dt)
+        self.animate(dt)
