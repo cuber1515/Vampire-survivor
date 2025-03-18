@@ -5,6 +5,7 @@ from sprites import *
 from random import randint
 from pytmx.util_pygame import load_pygame
 from groups import AllSprites
+from gun import Gun
 
 class Game:
     def __init__(self):
@@ -36,6 +37,9 @@ class Game:
         for obj in map.get_layer_by_name('Entities'):
             if obj.name == 'Player':
                 self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+
+        self.gunPos = pygame.Vector2(self.player.rect.centerx + 100, self.player.rect.centery)
+        Gun(self.gunPos, self.all_sprites)            
 
     def run(self):
         while self.running:
