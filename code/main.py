@@ -5,6 +5,7 @@ from sprites import *
 from random import randint
 from pytmx.util_pygame import load_pygame
 from groups import AllSprites
+from gun import Gun
 
 class Game:
     def __init__(self):
@@ -37,8 +38,12 @@ class Game:
             if obj.name == 'Player':
                 self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
 
+        self.gunPos = pygame.Vector2(self.player.rect.centerx + 100, self.player.rect.centery)
+        self.gun = Gun(self.gunPos, self.all_sprites)            
+
     def run(self):
         while self.running:
+            self.gunPos = pygame.Vector2(self.player.rect.centerx + 100, self.player.rect.centery)
             # dt
             dt = self.clock.tick() / 1000
 
@@ -49,6 +54,7 @@ class Game:
 
             # update
             self.all_sprites.update(dt)
+            self.gun.move(self.gunPos)
 
             #draw
             self.all_sprites.draw(self.player.rect.center)
