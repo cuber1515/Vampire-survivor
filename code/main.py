@@ -12,7 +12,7 @@ class Game:
         # set up
         pygame.init
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-        pygame.display.set_caption('Vampire Survivor')        
+        pygame.display.set_caption('Vampire Survivor')
         self.clock = pygame.time.Clock()
         self.running = True
 
@@ -38,12 +38,10 @@ class Game:
             if obj.name == 'Player':
                 self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
 
-        self.gunPos = pygame.Vector2(self.player.rect.centerx + 100, self.player.rect.centery)
-        self.gun = Gun(self.gunPos, self.all_sprites)            
+        self.gun = Gun(self.player.rect.center, self.all_sprites)            
 
     def run(self):
         while self.running:
-            self.gunPos = pygame.Vector2(self.player.rect.centerx + 100, self.player.rect.centery)
             # dt
             dt = self.clock.tick() / 1000
 
@@ -54,7 +52,7 @@ class Game:
 
             # update
             self.all_sprites.update(dt)
-            self.gun.move(self.gunPos)
+            self.gun.move(self.player.rect.center)
 
             #draw
             self.all_sprites.draw(self.player.rect.center)

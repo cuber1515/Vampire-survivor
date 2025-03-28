@@ -12,7 +12,9 @@ class Gun(pygame.sprite.Sprite):
 
     
     def move(self, pos):
-        self.rect = self.image.get_frect(center = pos)
+        rEct = self.image.get_frect(center = pos)
+        self.gunPos = pygame.Vector2(rEct.centerx + 100, rEct.centery)
+        self.rect = self.image.get_frect(center = self.gunPos)
 
     def update(self, dt):
         pass
