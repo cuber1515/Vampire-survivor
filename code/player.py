@@ -27,8 +27,8 @@ class Player(pygame.sprite.Sprite):
 
     def input(self):
         keys = pygame.key.get_pressed()
-        self.direction.x = keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]
-        self.direction.y = keys[pygame.K_DOWN] - keys[pygame.K_UP]
+        self.direction.x = keys[pygame.K_d] - keys[pygame.K_a]
+        self.direction.y = keys[pygame.K_s] - keys[pygame.K_w]
         self.direction = self.direction.normalize() if self.direction else self.direction
 
     def move(self, dt):
