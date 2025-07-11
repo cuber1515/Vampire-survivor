@@ -40,7 +40,7 @@ class Game:
     def input(self):
         if pygame.mouse.get_pressed()[0] and self.can_shoot:
             pos = self.gun.rect.center + self.gun.player_direction * 50
-            Bullet(self.bullet_surf, pos, self.gun.player_direction, (self.all_sprites, self.bullet_sprites))
+            Bullet(self.bullet_surf, pos, self.gun.player_direction, (self.all_sprites, self.bullet_sprites), self.enemy_sprites)
             self.can_shoot = False
             self.shoot_time = pygame.time.get_ticks()
 
