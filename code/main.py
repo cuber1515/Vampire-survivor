@@ -79,7 +79,6 @@ class Game:
             #draw
             self.all_sprites.draw(self.player.rect.center)
             pygame.display.update()
-            print(self.bullet_sprites)
 
         pygame.quit()
         
