@@ -97,7 +97,7 @@ class Game:
             self.spawn_enemy()
             self.gun_timer()
             self.input()
-            self.all_sprites.update(dt)
+            self.all_sprites.update(dt, self.player.rect.center)
 
             #draw
             self.all_sprites.draw(self.player.rect.center)

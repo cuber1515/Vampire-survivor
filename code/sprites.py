@@ -42,7 +42,7 @@ class Gun(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(self.image, False, True)
         
 
-    def update(self, _):
+    def update(self, _, __):
         self.get_direction()
         self.rotate_gun()
         self.rect.center = self.player.rect.center + self.player_direction * self.distance
@@ -58,7 +58,7 @@ class Bullet(pygame.sprite.Sprite):
         self.direction = direction
         self.speed =  1200
 
-    def update(self, dt):
+    def update(self, dt, _):
         self.rect.center += self.direction * self.speed * dt
 
         if pygame.time.get_ticks() - self.spawn_time >= self.lifetime:

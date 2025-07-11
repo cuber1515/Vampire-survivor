@@ -16,4 +16,3 @@ class AllSprites(pygame.sprite.Group):
         for layer in [ground_sprites, object_sprites]:
             for sprite in sorted(layer, key = lambda sprite: sprite.rect.centery):
                 self.screen.blit(sprite.image, sprite.rect.topleft + self.offset)
-        
