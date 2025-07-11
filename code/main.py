@@ -29,6 +29,11 @@ class Game:
         self.shoot_time = 0
         self.gun_cooldown = 100
 
+        # enemy timer
+        self.can_spawn = True
+        self.spawn_time = 0
+        self.enemy_cooldown = 2000
+
     def load_images(self):
         self.bullet_surf = pygame.image.load(join('images', 'gun', 'bullet.png')).convert_alpha()
 
@@ -45,14 +50,23 @@ class Game:
             if current_time - self.shoot_time >= self.gun_cooldown:
                 self.can_shoot = True
 
-    def enemy_timer(self):
+    def spawn_enemy(self):
         map = load_pygame(join('data', 'maps', 'world.tmx'))
-        for obj in map.get_layer_by_name('Entities'):
-            if obj.name == 'Enemy':
-                self.enemy = Bat((obj.x, obj.y), self.all_sprites, self.collision_sprites)
 
+        if self.can_spawn:
+            random = randint(39, 73)
+            for obj in map.get_layer_by_name('Entities'):
+                if obj.id == random:
+                    self.enemy = Bat((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+                    self.can_spawn = False
+                    self.spawn_time = pygame.time.get_ticks()
+
+        else:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.spawn_time >= self.enemy_cooldown:
+                self.can_spawn = True
+        
     def setup(self):
-        self.enemy_timer()
         map = load_pygame(join('data', 'maps', 'world.tmx'))
 
         for x, y, image in map.get_layer_by_name('Ground').tiles():
@@ -80,6 +94,7 @@ class Game:
                     self.running = False
 
             # update
+            self.spawn_enemy()
             self.gun_timer()
             self.input()
             self.all_sprites.update(dt)
