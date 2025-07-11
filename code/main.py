@@ -5,7 +5,6 @@ from sprites import *
 from random import randint
 from pytmx.util_pygame import load_pygame
 from groups import AllSprites
-from enemies import Enemy
 
 class Game:
     def __init__(self):
