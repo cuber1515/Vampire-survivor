@@ -5,7 +5,7 @@ from sprites import *
 from random import randint
 from pytmx.util_pygame import load_pygame
 from groups import AllSprites
-from enemies import Bat
+from enemies import Bat, Blob, Skeleton
 
 class Game:
     def __init__(self):
@@ -32,7 +32,7 @@ class Game:
         # enemy timer
         self.can_spawn = True
         self.spawn_time = 0
-        self.enemy_cooldown = 2000
+        self.enemy_cooldown = 500
 
     def load_images(self):
         self.bullet_surf = pygame.image.load(join('images', 'gun', 'bullet.png')).convert_alpha()
@@ -55,9 +55,15 @@ class Game:
 
         if self.can_spawn:
             random = randint(39, 73)
+            mob = randint(1,3)
             for obj in map.get_layer_by_name('Entities'):
                 if obj.id == random:
-                    self.enemy = Bat((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+                    if mob == 1:
+                        self.enemy = Bat((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+                    elif mob == 2:
+                        self.enemy = Blob((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+                    else:
+                        self.enemy = Skeleton((obj.x, obj.y), self.all_sprites, self.collision_sprites)
                     self.can_spawn = False
                     self.spawn_time = pygame.time.get_ticks()
 
