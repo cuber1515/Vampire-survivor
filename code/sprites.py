@@ -87,7 +87,7 @@ class Enemy(pygame.sprite.Sprite):
 
         # movement
         self.direction = pygame.Vector2()
-        self.speed = 300
+        self.speed = 350
         self.collision_sprites = collision_sprites
         self.goal = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2)
 

@@ -2,7 +2,7 @@ import pygame
 from settings import *
 from player import Player
 from sprites import *
-from random import randint
+from random import randint, choice
 from pytmx.util_pygame import load_pygame
 from groups import AllSprites
 
@@ -14,14 +14,12 @@ class Game:
         pygame.display.set_caption('Vampire Survivor')        
         self.clock = pygame.time.Clock()
         self.running = True
-        self.load_images()
-
+        
         # groups
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
         self.bullet_sprites = pygame.sprite.Group()
-
-        self.setup()
+        self.enemy_sprites = pygame.sprite.Group()
 
         # gun timer
         self.can_shoot = True
@@ -29,9 +27,12 @@ class Game:
         self.gun_cooldown = 100
 
         # enemy timer
-        self.can_spawn = True
-        self.spawn_time = 0
-        self.enemy_cooldown = 500
+        self.enemy_event = pygame.event.custom_type()
+        pygame.time.set_timer(self.enemy_event, 300)
+        self.spawn_pos = []
+
+        self.load_images()
+        self.setup()
 
     def load_images(self):
         self.bullet_surf = pygame.image.load(join('images', 'gun', 'bullet.png')).convert_alpha()
@@ -49,21 +50,6 @@ class Game:
             if current_time - self.shoot_time >= self.gun_cooldown:
                 self.can_shoot = True
 
-    def spawn_enemy(self):
-        map = load_pygame(join('data', 'maps', 'world.tmx'))
-
-        if self.can_spawn:
-            random = randint(39, 73)
-            for obj in map.get_layer_by_name('Entities'):
-                if obj.id == random:
-                    self.enemy = Enemy((obj.x, obj.y), self.all_sprites, self.collision_sprites)
-                    self.can_spawn = False
-                    self.spawn_time = pygame.time.get_ticks()
-
-        else:
-            current_time = pygame.time.get_ticks()
-            if current_time - self.spawn_time >= self.enemy_cooldown:
-                self.can_spawn = True
         
     def setup(self):
         map = load_pygame(join('data', 'maps', 'world.tmx'))
@@ -81,6 +67,8 @@ class Game:
             if obj.name == 'Player':
                 self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
                 self.gun = Gun(self.player, self.all_sprites)
+            else:
+                self.spawn_pos.append((obj.x, obj.y))
 
     def run(self):
         while self.running:
@@ -91,9 +79,10 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                if event.type == self.enemy_event:
+                    Enemy(choice(self.spawn_pos), (self.all_sprites, self.enemy_sprites), self.collision_sprites)
 
             # update
-            self.spawn_enemy()
             self.gun_timer()
             self.input()
             self.all_sprites.update(dt, self.player.rect.center)
