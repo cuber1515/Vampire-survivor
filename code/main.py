@@ -45,12 +45,19 @@ class Game:
             if current_time - self.shoot_time >= self.gun_cooldown:
                 self.can_shoot = True
 
+    def enemy_timer(self):
+        map = load_pygame(join('data', 'maps', 'world.tmx'))
+        for obj in map.get_layer_by_name('Entities'):
+            if obj.name == 'Enemy':
+                self.enemy = Bat((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+
     def setup(self):
+        self.enemy_timer()
         map = load_pygame(join('data', 'maps', 'world.tmx'))
 
         for x, y, image in map.get_layer_by_name('Ground').tiles():
             Sprite((x * TILE_SIZE, y * TILE_SIZE), image, self.all_sprites)
-            
+
         for obj in map.get_layer_by_name('Objects'):
             CollisionSprite((obj.x, obj.y), obj.image, (self.all_sprites, self.collision_sprites))
 
