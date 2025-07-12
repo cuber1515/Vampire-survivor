@@ -40,9 +40,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = self.hitbox_rect.center
 
     def collision(self, direction):
-        for sprite in self.enemy_sprites:
-            if sprite.rect.colliderect(self.hitbox_rect):
-                pygame.quit()
         for sprite in self.collision_sprites:
             if sprite.rect.colliderect(self.hitbox_rect):
                 if direction == 'horizontal':

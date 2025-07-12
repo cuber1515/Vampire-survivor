@@ -84,7 +84,6 @@ class Enemy(pygame.sprite.Sprite):
         # set up image
         self.frame_index = 0
         self.load_images()
-        self.load_audio()
         self.image = pygame.image.load(join('images', 'enemies', self.mob, '0.png')).convert_alpha()
         self.rect = self.image.get_frect(center = pos)
         self.hitbox_rect = self.rect.inflate(-60, -60)
@@ -97,6 +96,10 @@ class Enemy(pygame.sprite.Sprite):
 
         self.bullet_sprites = bullet_sprites
 
+        # timer
+        self.death_time = 0
+        self.death_duration = 400
+
     def load_images(self):
         self.frames = []
         self.folder_path = join('images', 'enemies', self.mob)
@@ -105,10 +108,6 @@ class Enemy(pygame.sprite.Sprite):
             full_path = join(self.folder_path, name)
             surf = pygame.image.load(full_path).convert_alpha()
             self.frames.append(surf)
-    
-    def load_audio(self):
-        pygame.init()
-        self.impact_sound = pygame.mixer.Sound(join('audio', 'impact.ogg'))
 
     def track(self, pos):
         self.direction.x = -self.rect.centerx + pos[0]
@@ -122,13 +121,19 @@ class Enemy(pygame.sprite.Sprite):
         self.collision('vertical')
         self.rect.center = self.hitbox_rect.center
 
-    def collision(self, direction):
-        for sprite in self.bullet_sprites:
-            if sprite.rect.colliderect(self.hitbox_rect):
-                self.kill()
-                sprite.kill()
-                self.impact_sound.play()
-        
+    def destroy(self):
+        # start a timer
+        self.death_time = pygame.time.get_ticks()
+        # change the image
+        surf = pygame.mask.from_surface(self.frames[0]).to_surface()
+        surf.set_colorkey('black')
+        self.image = surf
+
+    def death_timer(self):
+        if pygame.time.get_ticks() - self.death_time >= self.death_duration:
+            self.kill()
+
+    def collision(self, direction):        
         for sprite in self.collision_sprites:
             if sprite.rect.colliderect(self.hitbox_rect):
                 if direction == 'horizontal':
@@ -143,6 +148,9 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.frames[int(self.frame_index) % len(self.frames)]
 
     def update(self, dt, pos):
-        self.animate(dt)
-        self.track(pos)
-        self.move(dt)
+        if self.death_time == 0:
+            self.animate(dt)
+            self.track(pos)
+            self.move(dt)
+        else:
+            self.death_timer()
