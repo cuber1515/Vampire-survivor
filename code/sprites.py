@@ -49,26 +49,19 @@ class Gun(pygame.sprite.Sprite):
         self.rect.center = self.player.rect.center + self.player_direction * self.distance
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, surf, pos, direction, groups, collision_sprites):
+    def __init__(self, surf, pos, direction, groups):
         super().__init__(groups)
         self.image = surf
         self.rect = self.image.get_frect(center = pos)
-        self.hitbox_rect = self.rect.inflate(-20, -20)
+        self.hitbox_rect = self.rect.inflate(-40, -40)
 
         self.spawn_time = pygame.time.get_ticks()
         self.lifetime = 1000
 
         self.direction = direction
         self.speed =  1200
-        self.collision_sprites = collision_sprites
-
-    def collision(self):
-        for sprite in self.collision_sprites:
-            if sprite.rect.colliderect(self.hitbox_rect):
-                self.kill()
 
     def update(self, dt, _):
-        self.collision()
         self.hitbox_rect.center += self.direction * self.speed * dt
         self.rect.center = self.hitbox_rect.center
 
@@ -76,7 +69,7 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, collision_sprites):
+    def __init__(self, pos, groups, collision_sprites, bullet_sprites):
         super().__init__(groups)
 
         # randomizing the mob
@@ -101,6 +94,8 @@ class Enemy(pygame.sprite.Sprite):
         self.collision_sprites = collision_sprites
         self.goal = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2)
 
+        self.bullet_sprites = bullet_sprites
+
     def load_images(self):
         self.frames = []
         self.folder_path = join('images', 'enemies', self.mob)
@@ -123,6 +118,11 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.center = self.hitbox_rect.center
 
     def collision(self, direction):
+        for sprite in self.bullet_sprites:
+            if sprite.rect.colliderect(self.hitbox_rect):
+                self.kill()
+                sprite.kill()
+        
         for sprite in self.collision_sprites:
             if sprite.rect.colliderect(self.hitbox_rect):
                 if direction == 'horizontal':

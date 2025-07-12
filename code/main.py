@@ -40,7 +40,7 @@ class Game:
     def input(self):
         if pygame.mouse.get_pressed()[0] and self.can_shoot:
             pos = self.gun.rect.center + self.gun.player_direction * 50
-            Bullet(self.bullet_surf, pos, self.gun.player_direction, (self.all_sprites, self.bullet_sprites), self.enemy_sprites)
+            Bullet(self.bullet_surf, pos, self.gun.player_direction, (self.all_sprites, self.bullet_sprites))
             self.can_shoot = False
             self.shoot_time = pygame.time.get_ticks()
 
@@ -65,7 +65,7 @@ class Game:
 
         for obj in map.get_layer_by_name('Entities'):
             if obj.name == 'Player':
-                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
+                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites, self.enemy_sprites)
                 self.gun = Gun(self.player, self.all_sprites)
             else:
                 self.spawn_pos.append((obj.x, obj.y))
@@ -80,7 +80,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
                 if event.type == self.enemy_event:
-                    Enemy(choice(self.spawn_pos), (self.all_sprites, self.enemy_sprites), self.collision_sprites)
+                    Enemy(choice(self.spawn_pos), (self.all_sprites, self.enemy_sprites), self.collision_sprites, self.bullet_sprites)
 
             # update
             self.gun_timer()

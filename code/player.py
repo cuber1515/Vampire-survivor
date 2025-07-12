@@ -1,7 +1,7 @@
 from settings import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, collision_sprites):
+    def __init__(self, pos, groups, collision_sprites, enemy_sprites):
         super().__init__(groups)
         self.state, self.frame_index = 'down', 0
         self.load_images()
@@ -13,6 +13,8 @@ class Player(pygame.sprite.Sprite):
         self.direction = pygame.Vector2()
         self.speed = 500
         self.collision_sprites = collision_sprites
+
+        self.enemy_sprites = enemy_sprites
 
     def load_images(self):
         self.frames = {'left': [], 'right': [], 'up': [], 'down': []}
@@ -38,6 +40,9 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = self.hitbox_rect.center
 
     def collision(self, direction):
+        for sprite in self.enemy_sprites:
+            if sprite.rect.colliderect(self.hitbox_rect):
+                pygame.quit()
         for sprite in self.collision_sprites:
             if sprite.rect.colliderect(self.hitbox_rect):
                 if direction == 'horizontal':
