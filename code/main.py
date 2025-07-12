@@ -32,10 +32,20 @@ class Game:
         self.spawn_pos = []
 
         self.load_images()
+        self.load_audio()
         self.setup()
 
     def load_images(self):
         self.bullet_surf = pygame.image.load(join('images', 'gun', 'bullet.png')).convert_alpha()
+    
+    def load_audio(self):
+        pygame.init()
+        self.shoot_sound = pygame.mixer.Sound(join('audio', 'shoot.wav'))
+        self.shoot_sound.set_volume(0.1)
+
+        self.music = pygame.mixer.Sound(join('audio', 'music.wav'))
+        self.music.set_volume(0.1)
+        self.music.play(loops = -1)
 
     def input(self):
         if pygame.mouse.get_pressed()[0] and self.can_shoot:
@@ -43,6 +53,7 @@ class Game:
             Bullet(self.bullet_surf, pos, self.gun.player_direction, (self.all_sprites, self.bullet_sprites))
             self.can_shoot = False
             self.shoot_time = pygame.time.get_ticks()
+            self.shoot_sound.play()
 
     def gun_timer(self):
         if not self.can_shoot:

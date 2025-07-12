@@ -84,6 +84,7 @@ class Enemy(pygame.sprite.Sprite):
         # set up image
         self.frame_index = 0
         self.load_images()
+        self.load_audio()
         self.image = pygame.image.load(join('images', 'enemies', self.mob, '0.png')).convert_alpha()
         self.rect = self.image.get_frect(center = pos)
         self.hitbox_rect = self.rect.inflate(-60, -60)
@@ -105,6 +106,10 @@ class Enemy(pygame.sprite.Sprite):
             surf = pygame.image.load(full_path).convert_alpha()
             self.frames.append(surf)
     
+    def load_audio(self):
+        pygame.init()
+        self.impact_sound = pygame.mixer.Sound(join('audio', 'impact.ogg'))
+
     def track(self, pos):
         self.direction.x = -self.rect.centerx + pos[0]
         self.direction.y = -self.rect.centery + pos[1]
@@ -122,6 +127,7 @@ class Enemy(pygame.sprite.Sprite):
             if sprite.rect.colliderect(self.hitbox_rect):
                 self.kill()
                 sprite.kill()
+                self.impact_sound.play()
         
         for sprite in self.collision_sprites:
             if sprite.rect.colliderect(self.hitbox_rect):
