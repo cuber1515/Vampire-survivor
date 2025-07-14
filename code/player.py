@@ -1,7 +1,7 @@
 from settings import *
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, collision_sprites, enemy_sprites):
+    def __init__(self, pos, groups, collision_sprites):
         super().__init__(groups)
         self.state, self.frame_index = 'down', 0
         self.load_images()
@@ -13,8 +13,6 @@ class Player(pygame.sprite.Sprite):
         self.direction = pygame.Vector2()
         self.speed = 500
         self.collision_sprites = collision_sprites
-
-        self.enemy_sprites = enemy_sprites
 
     def load_images(self):
         self.frames = {'left': [], 'right': [], 'up': [], 'down': []}
@@ -28,8 +26,8 @@ class Player(pygame.sprite.Sprite):
                         
     def input(self):
         keys = pygame.key.get_pressed()
-        self.direction.x = keys[pygame.K_d] - keys[pygame.K_a]
-        self.direction.y = keys[pygame.K_s] - keys[pygame.K_w]
+        self.direction.x = (keys[pygame.K_d] or keys[pygame.K_RIGHT]) - (keys[pygame.K_a] or keys[pygame.K_LEFT])
+        self.direction.y = (keys[pygame.K_s] or keys[pygame.K_DOWN]) - (keys[pygame.K_w] or keys[pygame.K_UP])
         self.direction = self.direction.normalize() if self.direction else self.direction
 
     def move(self, dt):

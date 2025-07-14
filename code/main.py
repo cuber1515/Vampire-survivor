@@ -46,7 +46,7 @@ class Game:
 
         self.music = pygame.mixer.Sound(join('audio', 'music.wav'))
         self.music.set_volume(0.1)
-        # self.music.play(loops = -1)
+        self.music.play(loops = -1)
 
     def input(self):
         if pygame.mouse.get_pressed()[0] and self.can_shoot:
@@ -76,7 +76,7 @@ class Game:
 
         for obj in map.get_layer_by_name('Entities'):
             if obj.name == 'Player':
-                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites, self.enemy_sprites)
+                self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites)
                 self.gun = Gun(self.player, self.all_sprites)
             else:
                 self.spawn_pos.append((obj.x, obj.y))
